@@ -46,6 +46,14 @@ nohup ./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz &
 
 这里使用了`nohup`命令，可以在关闭终端后继续运行。注意最后的`&`符号，表示后台运行。
 
+当然，你使用 `pm2` 更没有问题，参考：
+
+```sh
+pm2 start ./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz
+
+pm2 save # 这条命令第一次执行即可，后面不用
+```
+
 ### Windows
 
 在release页面下载"windows"版本资源，解压后执行：
@@ -55,3 +63,10 @@ task_windows_amd64_v0.1.3.exe --api https://xxxx.com --token xxxyyyzzz
 ```
 
 注意：不可直接复制上面的命令，以你解压后的文件名为准。
+
+
+### 其它问题
+
+如果你是放在和reman同一台服务器上的话，可以将 `--api https://xxxx.com` 换成 `--api http://127.0.0.1:4677` 这样不用经过网络，性能极高。
+
+注意：reman的默认监听端口是4677，如果自行修改过的话，注意替换。
