@@ -49,10 +49,12 @@ nohup ./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz &
 当然，你使用 `pm2` 更没有问题，参考：
 
 ```sh
-pm2 start ./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz
+pm2 start "./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz"
 
 pm2 save # 这条命令第一次执行即可，后面不用
 ```
+
+注意上面的命令中的"",这在pm2中是必须的。
 
 ### Windows
 
