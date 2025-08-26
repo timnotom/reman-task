@@ -1,74 +1,113 @@
-## 说明
+# ReMan资源管理系统 - 本地执行程序
 
-这是一个第三方的ReMan资源管理系统的本地执行程序
+## 📋 程序简介
 
-## 使用方法
+这是 ReMan 资源管理系统的第三方本地执行程序，用于在本地环境中自动执行资源管理任务。
 
+## 🚀 快速开始
 
-```sh
+### 1. 获取所需信息
+- **API 地址**：你的 ReMan 网站地址（如：`https://your-site.reman.com`）
+- **Token**：在 ReMan 后台设置中生成的访问令牌，路径：站点配置->其它配置->须隐藏配置
+
+### 2. 查看帮助信息
+```bash
 ./task_linux_amd64_v0.1.3 -h
-
-使用方法：
-Linux: ./go-reman-task --api https://www.reman.com --token xxx
-Windows: go-reman-task.exe --api https://www.reman.com --token
-
-代理：加上--proxy参数即可，如：--proxy http://127.0.0.1:10808
-
-若有密码认证：--proxy http://username:password@127.0.0.1:10808
-
-Usage:
-  go-reman-task [flags]
-
-Flags:
-      --api string     ReMan 网站地址，如：https://www.reman.com
-  -h, --help           help for go-reman-task
-      --interval int   任务执行间隔时间，单位秒 (default 5)
-      --proxy string   代理地址，支持格式：http://127.0.0.1:10808 或 socks5://127.0.0.1:10809
-      --token string   ReMan 网站 token 请在后台设置中生成
 ```
 
+## ⚙️ 参数说明
 
-### Linux
+| 参数 | 说明 | 示例 |
+|------|------|------|
+| `--api` | ReMan 网站地址 | `https://www.reman.com` |
+| `--token` | 访问令牌（必需） | 从后台设置中获取 |
+| `--interval` | 任务执行间隔（秒） | 默认5秒 |
+| `--proxy` | 代理设置（可选） | `http://127.0.0.1:10808` |
 
-在release页面下载"linux"版本资源，解压后执行：
+### 代理配置示例
+```bash
+# HTTP 代理
+--proxy http://127.0.0.1:10808
+
+# 带认证的代理
+--proxy http://username:password@127.0.0.1:10808
+
+# SOCKS5 代理
+--proxy socks5://127.0.0.1:10809
+```
+
+## 💻 安装与运行
+
+### Linux 系统
+
+#### 前台运行
+```bash
+./task_linux_amd64_v0.1.3 --api https://your-site.com --token your_token_here
+```
+
+#### 后台运行
+```bash
+# 使用 nohup 后台运行
+nohup ./task_linux_amd64_v0.1.3 --api https://your-site.com --token your_token_here &
+
+# 使用 PM2 管理（推荐）
+pm2 start "./task_linux_amd64_v0.1.3 --api https://your-site.com --token your_token_here" --name "reman-task"
+pm2 save  # 保存配置（首次运行时执行）
+pm2 startup  # 设置开机自启
+```
+
+### Windows 系统
+
+```cmd
+task_windows_amd64_v0.1.3.exe --api https://your-site.com --token your_token_here
+```
+
+## ⚡ 性能优化
+
+如果程序与 ReMan 服务部署在同一台服务器上，可以使用本地地址提高性能：
 
 ```bash
-./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz
+--api http://127.0.0.1:4677
 ```
 
-注意：不可直接复制上面的命令，以你解压后的文件名为准。
+> **注意**：4677 是 ReMan 的默认端口，如果你修改过端口，请相应调整。
 
-后台运行：
+## 📝 常见问题
+
+### Q: 如何获取 Token？
+A: 登录 ReMan 后台，在设置页面中生成访问令牌。路径：站点配置->其它配置->须隐藏配置
+
+### Q: 程序异常退出怎么办？
+A: 检查网络连接、API 地址和 Token 是否正确。建议使用 PM2 管理进程，可自动重启。
+
+### Q: 如何查看运行日志？
+A: 
+- nohup 方式：查看 `nohup.out` 文件
+- PM2 方式：使用 `pm2 logs reman-task`
+
+### Q: 如何停止程序？
+A:
+- 前台运行：按 `Ctrl+C`
+- nohup 方式：`ps aux | grep task` 找到进程ID，然后 `kill PID`
+- PM2 方式：`pm2 stop reman-task`
+
+## ⚠️ 注意事项
+
+1. **文件名**：请以实际下载的文件名为准，不要直接复制示例命令
+2. **权限**：Linux 下可能需要添加执行权限：`chmod +x task_linux_amd64_v0.1.3`
+3. **防火墙**：确保能正常访问 ReMan API 地址
+4. **Token 安全**：请妥善保管你的访问令牌，不要泄露给他人
+
+## 📊 PM2 常用命令
 
 ```bash
-nohup ./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz &
+pm2 list              # 查看所有进程
+pm2 logs reman-task   # 查看日志
+pm2 restart reman-task # 重启进程
+pm2 stop reman-task   # 停止进程
+pm2 delete reman-task # 删除进程
 ```
 
-这里使用了`nohup`命令，可以在关闭终端后继续运行。注意最后的`&`符号，表示后台运行。
+---
 
-当然，你使用 `pm2` 更没有问题，参考：
-
-```sh
-pm2 start "./task_linux_amd64_v0.1.3 --api https://xxxx.com --token xxxyyyzzz"
-
-pm2 save # 这条命令第一次执行即可，后面不用
-```
-
-注意上面的命令中的"",这在pm2中是必须的。
-
-### Windows
-
-在release页面下载"windows"版本资源，解压后执行：
-
-```bash
-task_windows_amd64_v0.1.3.exe --api https://xxxx.com --token xxxyyyzzz
-```
-
-注意：不可直接复制上面的命令，以你解压后的文件名为准。
-
-
-### 其它问题
-
-如果你是放在和reman同一台服务器上的话，可以将 `--api https://xxxx.com` 换成 `--api http://127.0.0.1:4677` 这样不用经过网络，性能极高。
-
-注意：reman的默认监听端口是4677，如果自行修改过的话，注意替换。
+如有问题，请检查网络连接和配置参数是否正确。
